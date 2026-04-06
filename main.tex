@@ -1,0 +1,311 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage[hidelinks,breaklinks]{hyperref}
+\usepackage{geometry}
+\usepackage{url}
+\geometry{a4paper, total={122mm,193mm}, left=44mm, right=44mm, top=52mm, bottom=52mm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\linespread{1.0}
+\begin{document}
+
+\title{Reclaim: Digital Platform For Personalized Addiction Recovery And Behavioural Health}
+
+\author{Konatham Deekshitha$^{1}$, Tanimki Sujith Kumar$^{1}$, Likhitha Inturi$^{1}$, and Gorantla Kotaiah$^{1}$}
+
+\date{}
+
+\maketitle
+
+\noindent$^{1}$\,Dept. of Information Technology, Siddhartha Academy of Higher Education, Deemed to be University, Vijayawada, India\\\noindent\small\{238w1a12f9@vrsec.ac.in, tsujithkumar108@gmail.com, 238w1a12g3@vrsec.ac.in, 238w1a12e1@vrsec.ac.in\}
+
+\begin{abstract}
+Digital addictions negatively impact mental health, productivity, and well-being among young adults. RECLAIM is a mobile-based recovery tool that helps users track addiction, identify severity levels, and follow personalized recovery plans. Key features include addiction tracking, motivational reminders, and relapse-prevention strategies. The app incorporates standard recovery techniques including goal setting and habit modification, built with the Flutter framework for cross-platform compatibility. Initial evaluations demonstrate positive impact on user awareness, accountability, and adherence to recovery goals.
+\end{abstract}
+
+\noindent\textbf{Keywords:} Addiction recovery, mobile health application, digital addiction, behavioral analysis, habit tracking, Flutter framework
+
+\section{Introduction}\label{sec:intro}
+Digital technologies and addictive chemicals increasingly cause behavioral dependency among young adults \cite{b1}, creating psychological, social, and economic burdens. Addiction develops through repeated engagement, leading to loss of self-control, withdrawal symptoms, and continued use despite negative consequences.
+
+Traditional recovery methods (therapy, treatment centers, support groups) lack accessibility, affordability, and personalization \cite{b4,b5,b6}. They rarely incorporate real-time intervention or adapt to individual progress, leaving gaps during relapse phases.
+
+RECLAIM addresses these shortcomings with a mobile recovery tool featuring structured self-assessment, progress visualization, and personalized recovery plans. The app provides motivational reminders via Firebase Cloud Messaging \cite{b3}, enabling accessible, real-time support across platforms using Flutter and Firebase technology.
+\section{Literature Survey}\label{sec:literature}
+[1] Kuss and Griffiths (2017) examine social networking addiction and its psychological impacts. They highlight the need for early detection and intervention, while noting challenges in distinguishing pathological from normal use and the requirement for standardized diagnostic criteria.
+
+[2] Acion et al. (2017) use machine learning (Random Forests, Logistic Regression, SVMs) to predict substance use disorder treatment success. They analyze patient data to identify recovery factors, while addressing challenges in data quality, model interpretability, and real-world generalizability.
+
+[3] Morrison et al. (2017) investigate push notification strategies for mental health applications. Personalized, context-aware notifications significantly improve engagement compared to fixed-schedule approaches, while addressing challenges in avoiding notification fatigue.
+
+[4] Gustafson et al. (2014) evaluate A-CHESS, a mobile intervention providing monitoring, relapse alerts, counselor communication, and location-based support. RCT results show significant reductions in risky drinking, emphasizing the importance of accessible real-time support outside formal treatment.
+
+[5] Dulin et al. (2014) evaluate a CBT-based mobile app for problem drinking. Results show significant reductions in drinking frequency and alcohol-related problems, supporting the value of accessible self-directed interventions.
+
+[6] Gonzalez and Dulin (2015) compare smartphone apps and web-based programs for alcohol use disorders. Both approaches show comparable efficacy, with mobile apps offering advantages in accessibility and real-time support.
+
+[7] Lally et al. (2010) examine habit formation timelines in real-world settings. Most participants reach habit plateau within 66 days (range: 18-254 days), with variation based on behavior complexity. Findings inform design of sustainable behavior change interventions and realistic recovery timelines.
+
+
+
+
+\section{Methodology}\label{sec:methodology}
+
+
+\subsection{System Overview}
+The system uses a 3-tier architecture: Flutter mobile client, Firebase backend (authentication, Cloud Firestore), and Python-based AI Microservice (FastAPI). All components communicate via JSON over secure HTTPS.
+
+
+\subsection{Data Acquisition and Input Processing}
+Users upload behavioral data (addiction type, daily use time, mood rating, task completion, relapses) via HTTPS or Cloud Function proxy. The FastAPI layer validates data types and ranges, returning HTTP errors for invalid requests.
+
+
+\subsection{Backend Orchestration}
+Firebase Authentication manages identities, Cloud Firestore stores profiles and behavioral logs, Cloud Functions provide optional request proxying, and Firebase Cloud Messaging sends notifications independently of inference.
+
+
+\subsection{Feature Engineering and Normalization}
+Seventeen features are engineered from user history: usage intensity/frequency/peak, mood statistics (mean, variance, trend), task completion, relapses (frequency, severity, timing), and engagement indicators. Features are standardized using StandardScaler based on training statistics.
+\begin{equation}
+x'_j = \frac{x_j - \mu_j}{\sigma_j}
+\label{eq:feature_normalization}
+\end{equation}
+where $x_j$ is the original feature value, $\mu_j$ and $\sigma_j$ are training statistics, and $x'_j$ is normalized. This approach follows standard ML practices \cite{b2}.
+
+
+
+\subsection{Machine Learning Model and Inference}
+Multi-class logistic regression is the primary inference method \cite{b2}, using the softmax function (Eqn.~\eqref{eq:softmax}) to predict risk levels. Random Forest and Decision Tree models serve as backups and do not run during normal operation.
+\begin{equation}
+P(y = k \mid \mathbf{x}') =
+\frac{e^{\mathbf{w}_k^{\top}\mathbf{x}' + b_k}}
+{\sum_{c} e^{\mathbf{w}_c^{\top}\mathbf{x}' + b_c}}
+\label{eq:softmax}
+\end{equation}
+where
+\begin{itemize}
+  \item $\mathbf{x}'$ : normalized input feature vector
+  \item $y$ : predicted risk class
+  \item $k$ : index of the target class
+  \item $c$ : class index used in the softmax summation
+  \item $\mathbf{w}_k$ : weight vector corresponding to class $k$
+  \item $b_k$ : bias term associated with class $k$
+  \item $P(y = k \mid \mathbf{x}')$ : posterior probability of class $k$
+\end{itemize}
+
+
+\subsection{Gamification System: Tree Growth Algorithm}
+The Tree Growth system uses positive reinforcement to encourage engagement \cite{b7}. Users earn points from recovery activities, converted to growth levels via Eqn.~\eqref{eq:growth_level}, where 500 points advance one stage.
+
+\begin{equation}
+\text{Growth Level} = \left\lfloor \frac{P_{\text{total}}}{500} \right\rfloor
+\label{eq:growth_level}
+\end{equation}
+
+\noindent where:
+\begin{itemize}
+    \item $0 \leq \text{Growth Level} \leq 100$
+    \item $P_{\text{total}}$ represents the cumulative growth points earned through recovery activities
+    \item $\lfloor \cdot \rfloor$ denotes the floor function (integer division)
+    \item $500$ is the fixed number of points required to advance one growth stage
+\end{itemize}
+
+
+\subsection{Personalization Logic}
+The AI microservice maps inferred risk level and addiction type to predefined goal/tip templates, generating a custom JSON response with predicted risk, confidence score, and recovery recommendations. Mapping does not affect predictions but customizes guidance based on contextual information.
+
+
+\subsection{System Architecture}
+
+\subsubsection{Overview:}
+The architecture comprises mobile client, Firebase backend, and Python ML microservice. It enables secure real-time behavioral data collection and personalized recovery guidance via HTTPS.
+
+\subsubsection{Mobile Client Layer:}
+Using the Flutter Framework, a mobile client layer has been created that enables end-users (EUs) to engage with an application. Through that engagement (via actions performed) users submit behavioral information regarding their addictions, including what type of addiction; the number of hours of daily substance use; the user's mood at the time the user performed each action/task; the user's success/failure rates on completing actions/tasks; and any recent relapses the user may have had. The mobile client will collect the information submitted by the end-user and send it in a secure manner to the back end and ML services to process such information. The Mobile Client Application also has the ability to present information from the back-end and/or ML services, such as the inferred risk of addiction, the user's level of confidence based upon submitted data, personalized recovery goals, tips for recovery; a record of “streaks” that represent the number of times users have performed actions without relapsing, and the latest analyses of the user's data.
+
+\subsubsection{Firebase Backend Layer:}
+Firebase provides cloud storage for user profiles, behavioral logs, and recovery plans; authentication for identity management and access control; and Cloud Messaging for sending notifications. The backend serves as a secure intermediary facilitating the inference process.
+
+\subsubsection{Machine Learning Microservice Layer:}
+The FastAPI-based microservice performs real-time inference via RESTful APIs. It validates incoming requests against defined schemas and value ranges, then processes validated data through feature engineering and normalization using pre-fitted StandardScaler.
+
+\subsubsection{Inference and Recovery Plan Generation:}
+Logistic Regression is the primary model for predicting user risk (low, medium, high), with Random Forest and Decision Tree as backups. Predictions are mapped to recovery goals/tips customized by addiction type and risk level.
+
+\subsubsection{Communication and Security:}
+HTTPS secures all communication between mobile client, backend, and ML microservice. Firebase authentication tokens control access to sensitive user data. Layered architecture ensures confidentiality and reliability. Fig.~\ref{fig:system_architecture} presents the system architecture.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{Architecture_diagram.jpeg}
+    \caption{Overall system architecture of the proposed RECLAIM platform.}
+    \label{fig:system_architecture}
+\end{figure}
+
+\section{Implementation Details}\label{sec:implementation}
+
+The RECLAIM system comprises a modular architecture with mobile client, cloud backend, and ML service. It collects, processes, and assesses user behavior in real-time, generating personalized recovery plans while maintaining scalability and interpretability. Fig.~\ref{fig:workflow} illustrates the application workflow.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{figure1.jpeg}
+    \caption{Overall application workflow of the proposed RECLAIM system.}
+    \label{fig:workflow}
+\end{figure}
+
+
+\subsection{Mobile Client Layer:}
+The Flutter-based mobile app enables user registration, authentication, and behavioral input (addiction type, daily use, mood, task completion, relapses). It validates input format, displays real-time inference outputs (risk level, confidence, goals, tips, streaks, analytics), and visualizes recovery progress.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{figure2.jpeg}
+    \caption{User authentication and profile initialization workflow of the proposed RECLAIM system.}
+    \label{fig:auth_profile_flow}
+\end{figure}
+
+
+\subsection{Backend Application Layer:}
+Firebase provides authentication, data storage, and notification delivery. User profiles, behavioral logs, risk assessments, and recovery plans are stored in real-time. Cloud Messaging sends notifications independently of inference, while the real-time inference process executes via AI microservices.
+
+\subsection{Machine Learning Inference Service:}
+The FastAPI microservice provides RESTful endpoints for runtime inference. Incoming requests are validated against defined schemas and ranges. Valid inputs are transformed into 17 engineered behavioral features (usage patterns, mood trends, engagement, relapse indicators), standardized using pre-fitted StandardScaler. Fig.~\ref{fig:recovery_generation} illustrates the recovery plan generation workflow.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{figure4.jpeg}
+    \caption{Recovery plan generation workflow illustrating addiction analysis and personalized goal formulation.}
+    \label{fig:recovery_generation}
+\end{figure}
+
+
+\subsection{Risk Classification and Model Management:}
+Multi-class logistic regression is selected as the primary model for its fast processing, consistent outputs, and interpretability. Alternative models (Random Forest, Decision Tree) serve as backups if the primary model is unavailable. No models are retrained during runtime.
+
+\subsection{Recovery Plan Mapping:}
+Inferred risk levels and addiction types are mapped to predefined recovery goals and activities using established rules. This mapping customizes guidance without affecting ML predictions. Responses are returned in JSON format.
+
+\subsection{Data Persistence and Logging:}
+Cloud Firestore stores behavioral inputs, inference results, and recovery plans with per-user access controls ensuring data privacy.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{figure5.jpeg}
+    \caption{User activity analytics workflow illustrating data aggregation, trend analysis, and progress evaluation.}
+    \label{fig:analytics_workflow}
+\end{figure}
+
+
+\subsection{End-to-End Workflow:}
+The system workflow: (1) Users input behavior via mobile app, (2) Data is validated and sent via HTTPS, (3) AI service processes features and classifies risk, (4) Recommendations are generated and stored for tracking.
+
+
+
+
+
+
+
+\section{Result Analysis}\label{sec:results}
+
+\subsection{Model Performance and Accuracy}
+Logistic Regression achieves 85.33% accuracy (Table~\ref{tab:model_performance}) with balanced precision/recall and low latency, making it optimal for mobile deployment. Random Forest and Decision Tree show lower performance, supporting their use as backups.
+
+\begin{table}[htbp]
+\caption{Model Performance Comparison}
+\label{tab:model_performance}
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lccccc}
+\hline
+Model & Accuracy (\%) & Precision & Recall & F1-Score & Time (ms) \\
+\hline
+Logistic Regression & 85.33 & 0.84 & 0.86 & 0.85 & 9.7 \\
+Random Forest & 74.67 & 0.73 & 0.75 & 0.74 & 14.2 \\
+Decision Tree & 70.67 & 0.69 & 0.71 & 0.70 & 4.8 \\
+Rule-based Fallback & $\sim$67.00 & -- & -- & -- & $<$1.0 \\
+Random Baseline & 33.33 & -- & -- & -- & -- \\
+Majority Class & 40.00 & -- & -- & -- & -- \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+
+Table~\ref{tab:per_class_metrics} shows consistent F1-scores of 0.84-0.87 across risk classes. Weighted averages demonstrate the model accommodates diverse distributions without bias, confirming successful feature engineering.
+
+\begin{table}[htbp]
+\caption{Per-Class Performance Metrics for Logistic Regression}
+\label{tab:per_class_metrics}
+\centering
+\begin{tabular}{lcccc}
+\hline
+\textbf{Risk Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support (n)} \\
+\hline
+Low & 0.87 & 0.83 & 0.85 & 34 \\
+Medium & 0.82 & 0.86 & 0.84 & 38 \\
+High & 0.85 & 0.89 & 0.87 & 28 \\
+Weighted Avg & 0.84 & 0.86 & 0.85 & 100 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Output Visualization}
+Figures display personalized goals and recovery recommendations. The system tracks task completion and updates recovery status in real-time, providing alternative activities and time restrictions to support sustained recovery.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.45\columnwidth}
+        \centering
+        \includegraphics[width=\linewidth]{reclaim_goals.png}
+        \caption{Recovery plan output displaying daily goals and progress.}
+        \label{fig:recovery_plan_flow}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.45\columnwidth}
+        \centering
+        \includegraphics[width=\linewidth]{reclaim_altenatives.png}
+        \caption{Recovery plan illustrating alternative activities and time restrictions.}
+        \label{fig:recovery_recommendations}
+    \end{minipage}
+\end{figure}
+
+The system effectively converts risk predictions into behavioral recommendations.
+
+
+\section{Conclusion}\label{sec:conclusion}
+RECLAIM presents a three-layer architecture for personalized addiction recovery using Flutter, Firebase, and ML microservices. Logistic Regression provides reliable low-latency classification with dynamic goal mapping. Limitations include synthetic training data and lack of real-world validation. Future work: larger-scale testing, passive sensing, and privacy-preserving ML.
+
+
+
+
+
+
+
+
+\begin{thebibliography}{99}
+
+\bibitem{b1} Kuss, D.J., Griffiths, M.D.: Social networking sites and addiction: Ten lessons learned. \textit{Int. J. Environ. Res. Public Health} \textbf{14}(3), 311 (2017). \url{https://doi.org/10.3390/ijerph14030311}
+
+\bibitem{b2} Acion, L., Kelmansky, D., van der Laan, M., Sahker, E., Jones, D., Arndt, S.: Use of a machine learning framework to predict substance use disorder treatment success. \textit{PLoS ONE} \textbf{12}(4), e0175383 (2017). \url{https://doi.org/10.1371/journal.pone.0175383}
+
+\bibitem{b3} Morrison, L.G., Yardley, L., Powell, A., Michie, S.: The effect of timing and frequency of push notifications on usage of a smartphone-based stress management intervention: An exploratory trial. \textit{Transl. Behav. Med.} \textbf{7}(2), 270--282 (2017). \url{https://doi.org/10.1007/s13142-016-0400-1}
+
+\bibitem{b4} Gustafson, D.H., McTavish, F.M., Chih, M.Y., Atwood, A.K., Johnson, R.A., Boyle, M.G., et al.: A smartphone application to support recovery from alcoholism: A randomized clinical trial. \textit{JAMA Psychiatry} \textbf{71}(5), 566--572 (2014). \url{https://doi.org/10.1001/jamapsychiatry.2013.4642}
+
+\bibitem{b5} Dulin, P.L., Gonzalez, B., Campbell, T.: Results of a pilot test of a self-administered smartphone-based treatment system for alcohol use disorders: Usability and early outcomes. \textit{Subst. Abuse} \textbf{35}(2), 168--175 (2014). \url{https://doi.org/10.1080/08897077.2013.821437}
+
+\bibitem{b6} Gonzalez, V.M., Dulin, P.L.: Comparison of a smartphone app for alcohol use disorders with an Internet-based intervention plus bibliotherapy: A pilot study. \textit{J. Consult. Clin. Psychol.} \textbf{83}(2), 335--345 (2015). \url{https://doi.org/10.1037/a0038620}
+
+\bibitem{b7} Lally, P., van Jaarsveld, C.H.M., Potts, H.W.W., Wardle, J.: How are habits formed: Modelling habit formation in the real world. \textit{Eur. J. Soc. Psychol.} \textbf{40}(6), 998--1009 (2010). \url{https://doi.org/10.1002/ejsp.674}
+
+\end{thebibliography}
+
+
+
+
+\end{document}

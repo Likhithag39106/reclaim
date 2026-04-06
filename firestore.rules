@@ -1,0 +1,74 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is accessing their own data
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+    
+    // Users collection - users can only read/write their own profile
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+      
+      // User's tasks subcollection
+      match /tasks/{taskId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's moods subcollection
+      match /moods/{moodId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's recovery plans subcollection
+      match /recoveryPlans/{planId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's analytics subcollection
+      match /analytics/{analyticsId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's relapse risks subcollection
+      match /relapseRisks/{riskId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+    
+    // Trees collection - users can only read/write their own tree
+    match /trees/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // Public recovery plans collection (for global reference data)
+    match /recoveryPlans/{planId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+    
+    // Public tasks collection (for global reference data)
+    match /tasks/{taskId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+    
+    // Public usage data (aggregated analytics)
+    match /usageData/{document=**} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+    
+    // Block all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

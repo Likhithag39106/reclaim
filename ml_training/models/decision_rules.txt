@@ -1,0 +1,38 @@
+DECISION TREE RULES FOR RECOVERY PLAN CLASSIFICATION
+============================================================
+
+Classes: ['high' 'low' 'medium']
+  0 = high
+  1 = low
+  2 = medium
+
+============================================================
+
+|--- days_since_last_relapse <= -0.60
+|   |--- avg_session_duration_min <= 0.68
+|   |   |--- sessions_per_day <= 0.79
+|   |   |   |--- mood_variance <= 0.78
+|   |   |   |   |--- avg_mood_rating <= -0.83
+|   |   |   |   |   |--- class: 2
+|   |   |   |   |--- avg_mood_rating >  -0.83
+|   |   |   |   |   |--- class: 2
+|   |   |   |--- mood_variance >  0.78
+|   |   |   |   |--- completion_rate <= 0.00
+|   |   |   |   |   |--- class: 0
+|   |   |   |   |--- completion_rate >  0.00
+|   |   |   |   |   |--- class: 2
+|   |   |--- sessions_per_day >  0.79
+|   |   |   |--- class: 0
+|   |--- avg_session_duration_min >  0.68
+|   |   |--- relapse_count <= 0.94
+|   |   |   |--- class: 0
+|   |   |--- relapse_count >  0.94
+|   |   |   |--- class: 0
+|--- days_since_last_relapse >  -0.60
+|   |--- avg_session_duration_min <= 0.24
+|   |   |--- avg_session_duration_min <= -0.14
+|   |   |   |--- class: 1
+|   |   |--- avg_session_duration_min >  -0.14
+|   |   |   |--- class: 1
+|   |--- avg_session_duration_min >  0.24
+|   |   |--- class: 1

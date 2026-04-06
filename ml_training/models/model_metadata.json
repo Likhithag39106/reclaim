@@ -1,0 +1,46 @@
+{
+  "feature_names": [
+    "avg_session_duration_min",
+    "sessions_per_day",
+    "max_session_duration_min",
+    "late_night_sessions",
+    "weekend_session_ratio",
+    "completion_rate",
+    "current_streak_days",
+    "avg_completion_time_hours",
+    "avg_mood_rating",
+    "mood_variance",
+    "trigger_count",
+    "relapse_count",
+    "days_since_last_relapse",
+    "relapse_frequency",
+    "engagement_rate",
+    "unique_active_days",
+    "addiction_Gambling",
+    "addiction_Gaming",
+    "addiction_Social Media",
+    "addiction_Substance",
+    "mood_trend_encoded"
+  ],
+  "num_features": 21,
+  "classes": [
+    "high",
+    "low",
+    "medium"
+  ],
+  "num_classes": 3,
+  "training_date": "2025-12-31T10:36:24.036684",
+  "training_samples": 350,
+  "test_samples": 150,
+  "results": {
+    "logistic_regression": {
+      "accuracy": 0.9533333333333334
+    },
+    "decision_tree": {
+      "accuracy": 0.92
+    },
+    "random_forest": {
+      "accuracy": 0.9533333333333334
+    }
+  }
+}

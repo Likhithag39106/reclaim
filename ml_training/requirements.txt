@@ -1,0 +1,23 @@
+# Python Dependencies for AI Recovery Plan Training
+# Install with: pip install -r requirements.txt
+
+# Core ML Libraries
+tensorflow>=2.12.0          # Deep learning framework for model conversion
+scikit-learn>=1.3.0         # Machine learning algorithms (Random Forest, etc.)
+numpy>=1.24.0               # Numerical computing
+pandas>=2.0.0               # Data manipulation and analysis
+
+# Firebase Integration
+firebase-admin>=6.0.0       # Firebase Admin SDK for Firestore access
+
+# Visualization
+matplotlib>=3.7.0           # Plotting and visualization
+seaborn>=0.12.0            # Statistical data visualization
+
+# Model Serialization
+joblib>=1.3.0              # Efficient model saving/loading
+
+# Optional but Recommended
+tqdm>=4.65.0               # Progress bars
+jupyter>=1.0.0             # Interactive notebooks for exploration
+ipython>=8.12.0            # Enhanced Python shell

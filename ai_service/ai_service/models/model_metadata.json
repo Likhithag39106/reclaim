@@ -1,0 +1,53 @@
+{
+  "created_date": "2026-01-23T01:33:45.573603",
+  "training_samples": 500,
+  "feature_names": [
+    "daily_usage_minutes",
+    "weekly_usage_hours",
+    "session_frequency",
+    "longest_session_minutes",
+    "mood_score",
+    "mood_variance",
+    "stress_level",
+    "daily_task_completion",
+    "weekly_task_completion",
+    "relapse_count_30d",
+    "relapse_severity",
+    "clean_streak_days",
+    "support_group_attendance",
+    "social_support_score",
+    "therapy_session_count",
+    "sleep_quality",
+    "exercise_frequency"
+  ],
+  "feature_count": 17,
+  "output_classes": [
+    "low",
+    "medium",
+    "high"
+  ],
+  "models": {
+    "logistic_regression": {
+      "type": "logistic_regression",
+      "accuracy": 0.8533333333333334,
+      "precision": 0.853117845117845,
+      "recall": 0.8533333333333334,
+      "f1_score": 0.851969629539723
+    },
+    "random_forest": {
+      "type": "random_forest",
+      "accuracy": 0.7466666666666667,
+      "precision": 0.7782857142857144,
+      "recall": 0.7466666666666667,
+      "f1_score": 0.681749199310175
+    },
+    "decision_tree": {
+      "type": "decision_tree",
+      "accuracy": 0.7066666666666667,
+      "precision": 0.6914970760233918,
+      "recall": 0.7066666666666667,
+      "f1_score": 0.6970505050505051
+    }
+  },
+  "best_model": "logistic_regression"
+}

@@ -1,0 +1,71 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start AI Service (Uvicorn)",
+      "type": "shell",
+      "command": ".venv/Scripts/uvicorn",
+      "args": [
+        "ai_service.app:app",
+        "--reload",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8000"
+      ],
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^.*(?:error|Error).*$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*Uvicorn running.*$",
+          "endsPattern": "^.*(?:error|stopped).*$"
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Flutter Run",
+      "type": "shell",
+      "command": "flutter",
+      "args": [
+        "run"
+      ],
+      "problemMatcher": [
+        "$dart-build"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Start API + Flutter",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "Start AI Service (Uvicorn)",
+        "Flutter Run"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    }
+  ]
+}
